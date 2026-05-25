@@ -20,6 +20,7 @@ TOKEN_REGEX = [
     ('ESPACO',    r'[ \t]+'),                              # Espaços (ignorados)
     ('NOVA_LINHA',r'\n'),                                  # Quebras de linha (contagem)
     ('COMENTARIO',r'#.*'),                                 # Comentários (ignorados)
+    ('ERRO',      r'.')                                    # Pega qualquer caractere inválido que sobrou
 ]
 
 def analisador_lexico(codigo_fonte):
@@ -35,7 +36,10 @@ def analisador_lexico(codigo_fonte):
         if tipo_token == 'NOVA_LINHA':
             linha_atual += 1
         elif tipo_token == 'ESPACO' or tipo_token == 'COMENTARIO':
-            continue 
+            continue
+        elif tipo_token == 'ERRO': # TRATAMENTO DE ERRO LÉXICO
+            print(f"[ERRO LÉXICO] Caractere ou palavra inválida '{valor_token}' na linha {linha_atual}")
+            # Você pode escolher parar o compilador aqui com um 'return None' ou apenas avisar e continuar 
         else:
             tokens_encontrados.append((tipo_token, valor_token, linha_atual))
             

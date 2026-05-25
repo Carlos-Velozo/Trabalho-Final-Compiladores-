@@ -1,0 +1,35 @@
+# =========================
+# Cache e Arquivos Compilados Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# Ambientes Virtuais (Virtualenvs)
+# =========================
+venv/
+env/
+.venv/
+.env
+
+# =========================
+# Editores de Código (IDEs)
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# Arquivos do Sistema Operacional
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Pacotes e Distribuição
+# =========================
+build/
+dist/
+*.egg-info/
