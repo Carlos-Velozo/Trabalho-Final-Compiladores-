@@ -39,21 +39,8 @@ def analisador_lexico(codigo_fonte):
             continue
         elif tipo_token == 'ERRO': # TRATAMENTO DE ERRO LÉXICO
             print(f"[ERRO LÉXICO] Caractere ou palavra inválida '{valor_token}' na linha {linha_atual}")
-            # Você pode escolher parar o compilador aqui com um 'return None' ou apenas avisar e continuar 
+            # Escolher parar o compilador aqui com um 'return None' ou apenas avisar e continuar 
         else:
             tokens_encontrados.append((tipo_token, valor_token, linha_atual))
             
     return tokens_encontrados
-
-# --- TESTANDO AS NOVAS REGRAS ---
-codigo_teste = """
-# Automação complexa
-AUTOMACAO "Alarme Temperatura"
-QUANDO sensor.temperature_living_room for 30
-E tempo for 5min
-ENTAO notificar "Atenção"
-"""
-
-tokens = analisador_lexico(codigo_teste)
-for token in tokens:
-    print(f"Token: {token[0]:<15} | Valor: {token[1]:<35} | Linha: {token[2]}")
