@@ -1,48 +1,37 @@
-# 1. Importa a função do ficheiro lexico.py
 from lexico import analisador_lexico
-
-# 2. Importa a classe do ficheiro sintatico.py
 from sintatico import AnalisadorSintatico
+from semantico import AnalisadorSemantico
 
 def main():
-    # Código fonte de teste na nossa linguagem "Homi"
+    # Vamos criar um código com um ERRO SEMÂNTICO propositado
+    # Tentar "ligar" uma porta (sensor.porta_entrada)
     codigo_teste = """
-    AUTOMACAO "Ligar Luzes da Sala"
-    #teste comentario
-    QUANDO horario for 18:00
-    SE light.sala_estar estiver desligado
-    ENTAO ligar light.sala_estar
-    E notificar "Luzes ligadas!"
+    AUTOMACAO "Teste Semântico"
+    QUANDO sensor.porta_entrada for ligado
+    ENTAO ligar sensor.porta_entrada
     """
 
     print("========================================")
     print("      COMPILADOR HOMI - INICIADO        ")
     print("========================================\n")
 
-    # --- FASE 1: ANÁLISE LÉXICA ---
-    print("[FASE 1] A executar o Analisador Léxico...")
-    tokens_gerados = analisador_lexico(codigo_teste)
+    # FASE 1: Léxico
+    tokens = analisador_lexico(codigo_teste)
     
-    # (Opcional) Imprimir os tokens para ver se está tudo correto
-    # for t in tokens_gerados:
-    #     print(t)
+    # FASE 2: Sintático
+    parser = AnalisadorSintatico(tokens)
+    sucesso_sintatico = parser.analisar()
+
+    if sucesso_sintatico:
+        # FASE 3: Semântico (Só corre se a sintaxe estiver correta)
+        print("\n[FASE 3] A executar o Analisador Semântico...")
+        semantico = AnalisadorSemantico(tokens)
+        sucesso_semantico = semantico.analisar()
         
-    print(f"-> {len(tokens_gerados)} tokens extraídos com sucesso.\n")
+        if sucesso_semantico:
+            print("\nRESULTADO FINAL: Pronto para gerar o YAML!")
+        else:
+            print("\nRESULTADO FINAL: Erros semânticos impedem a geração do YAML.")
 
-    # --- FASE 2: ANÁLISE SINTÁTICA ---
-    print("[FASE 2] A executar o Analisador Sintático...")
-    
-    # Passamos os tokens gerados na fase 1 para o parser da fase 2
-    parser = AnalisadorSintatico(tokens_gerados)
-    sucesso = parser.analisar()
-
-    print("\n========================================")
-    if sucesso:
-        print(" RESULTADO: Sucesso! Código Homi válido.")
-    else:
-        print(" RESULTADO: Falha! Encontrados erros de sintaxe.")
-    print("========================================")
-
-# Este bloco garante que o código principal só corre se executarmos o main.py diretamente
 if __name__ == "__main__":
     main()
