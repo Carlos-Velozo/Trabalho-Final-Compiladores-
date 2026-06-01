@@ -1,37 +1,58 @@
 from lexico import analisador_lexico
 from sintatico import AnalisadorSintatico
 from semantico import AnalisadorSemantico
+from gerador import GeradorYAML  
 
 def main():
-    # Vamos criar um código com um ERRO SEMÂNTICO propositado
-    # Tentar "ligar" uma porta (sensor.porta_entrada)
+    # Código fonte completo e válido escrito na nossa linguagem "Homi"
     codigo_teste = """
-    AUTOMACAO "Teste Semântico"
-    QUANDO sensor.porta_entrada for ligado
-    ENTAO ligar sensor.porta_entrada
+    AUTOMACAO "Rotina Noturna da Sala"
+    QUANDO horario for 22:30
+    SE light.sala_estar estiver ligado
+    ENTAO desligar light.sala_estar
+    E notificar "A casa foi recolhida e as luzes apagadas!"
     """
 
     print("========================================")
     print("      COMPILADOR HOMI - INICIADO        ")
     print("========================================\n")
 
-    # FASE 1: Léxico
+    # FASE 1: Análise Léxica
     tokens = analisador_lexico(codigo_teste)
     
-    # FASE 2: Sintático
+    # FASE 2: Análise Sintática
     parser = AnalisadorSintatico(tokens)
     sucesso_sintatico = parser.analisar()
 
     if sucesso_sintatico:
-        # FASE 3: Semântico (Só corre se a sintaxe estiver correta)
-        print("\n[FASE 3] A executar o Analisador Semântico...")
+        # FASE 3: Análise Semântica
+        print("")
         semantico = AnalisadorSemantico(tokens)
         sucesso_semantico = semantico.analisar()
         
         if sucesso_semantico:
-            print("\nRESULTADO FINAL: Pronto para gerar o YAML!")
+            # FASE 4: Geração de Código
+            print("")
+            gerador = GeradorYAML(tokens)
+            codigo_yaml = gerador.gerar()
+            
+            print("\n[SUCESSO] Código YAML Intermediário Gerado:")
+            print("----------------------------------------")
+            print(codigo_yaml)
+            print("----------------------------------------")
+            
+            # Grava o resultado final num ficheiro físico
+            nome_arquivo = "automacao_home_assistant.yaml"
+            with open(nome_arquivo, "w", encoding="utf-8") as f:
+                f.write(codigo_yaml)
+                
+            print(f"\n[CONCLUÍDO] Ficheiro '{nome_arquivo}' guardado com sucesso!")
+            print("O compilador terminou a execução com 0 erros.")
+            
         else:
-            print("\nRESULTADO FINAL: Erros semânticos impedem a geração do YAML.")
+            print("\n[ERRO] Compilação abortada na Fase Semântica.")
+    else:
+        print("\n[ERRO] Compilação abortada na Fase Sintática.")
 
 if __name__ == "__main__":
     main()
